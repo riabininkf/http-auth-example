@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package template;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/riabininkf/template/pb";
+
+service Template {
+  rpc CreateProductV1(CreateProductV1Request) returns (CreateProductV1Response) {
+    option (google.api.http) = {
+      post: "/api/v1/product"
+      body: "*"
+    };
+  }
+
+  rpc GetProductV1(GetProductV1Request) returns (GetProductV1Response) {
+    option (google.api.http) = {get: "/api/v1/products/{id}"};
+  }
+}
+
+message CreateProductV1Request{
+  string name = 1;
+  string comment = 2;
+}
+
+message CreateProductV1Response{
+  uint64 id = 1;
+  string name = 2;
+  string comment = 3;
+}
+
+message GetProductV1Request {
+  uint64 id = 1;
+}
+message GetProductV1Response {
+  uint64 id = 1;
+  string name = 2;
+  string comment = 3;
+}

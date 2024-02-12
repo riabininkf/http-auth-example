@@ -1,0 +1,9 @@
+postgres:
+  conn: postgres://user:password@localhost:5432/template?pool_max_conns=10
+grpc:
+  port: 8081
+http:
+  port: 8080
+logger:
+  disableCaller: false
+  disableStacktrace: true
