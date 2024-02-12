@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockery --name=Products --inpackage --output=. --filename=products_mock.go --structname=ProductsMock
+
 import (
 	"errors"
 
