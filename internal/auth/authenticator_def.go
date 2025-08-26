@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"time"
-
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/riabininkf/go-modules/config"
 	"github.com/riabininkf/go-modules/di"
@@ -43,11 +41,6 @@ func init() {
 					return nil, config.NewErrMissingKey(configKeySecret)
 				}
 
-				var leeway time.Duration
-				if leeway = cfg.GetDuration(configKeyLeeway); leeway == 0 {
-					return nil, config.NewErrMissingKey(configKeyLeeway)
-				}
-
 				noAuthRoutes := cfg.GetStringSlice(configKeyNoAuthRoutes)
 
 				return NewAuthenticator(
@@ -56,7 +49,7 @@ func init() {
 					jwt.NewParser(
 						jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}),
 						jwt.WithIssuer(issuer),
-						jwt.WithLeeway(leeway),
+						jwt.WithLeeway(cfg.GetDuration(configKeyLeeway)),
 					),
 					noAuthRoutes,
 				), nil

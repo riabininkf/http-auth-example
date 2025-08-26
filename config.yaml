@@ -2,8 +2,7 @@ auth:
   jwt:
     secret: "very secret key"
     issuer: "auth-service"
-    leeway: 2m
-    accessTokenTTL: 5m
+    accessTokenTTL: 5s
     refreshTokenTTL: 1h
   noAuthRoutes:
     - POST /v1/auth/register
