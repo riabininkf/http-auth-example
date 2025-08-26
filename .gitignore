@@ -1,5 +1,7 @@
-vendor
-.env
+.vscode
+__debug_bin*
 .DS_Store
-.idea/
-*.bak
+.idea
+
+.env
+go.work*

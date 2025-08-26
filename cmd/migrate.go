@@ -1,107 +1,96 @@
 package cmd
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"io"
+	"log"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
+	"github.com/riabininkf/go-modules/cmd"
+	"github.com/riabininkf/go-modules/config"
+	"github.com/riabininkf/go-modules/db"
+	"github.com/riabininkf/go-modules/di"
 	"github.com/spf13/cobra"
+)
 
-	"github.com/riabininkf/go-project-template/internal/container"
-	"github.com/riabininkf/go-project-template/internal/db"
+const (
+	defaultDbRequestTimeout = time.Second * 3
+
+	configKeyDbRequestTimeout = "db.requestTimeout"
 )
 
 func init() {
-	var path string
+	cmd.RegisterCommand(func(ctn di.Container) *cmd.Command {
+		migrateCmd := &cmd.Command{
+			Use: "migrate",
+		}
 
-	cmd := &cobra.Command{Use: "migrate"}
-	cmd.PersistentFlags().StringVar(&path, "path", "", "Path to migrations directory")
-	_ = cmd.MarkPersistentFlagRequired("path")
+		migrateCmd.PersistentFlags().StringP("path", "p", "", "path to migrations folder")
+		_ = migrateCmd.MarkPersistentFlagRequired("path")
 
-	cmd.AddCommand(&cobra.Command{
-		Use:   "up",
-		Short: "Apply all available migrations",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var (
-				err  error
-				conn *pgxpool.Pool
-			)
-			if err = container.Fill(db.DefName, &conn); err != nil {
-				return err
-			}
-			defer conn.Close()
+		migrateCmd.AddCommand(
+			migrateUp(ctn),
+			migrateDown(ctn),
+		)
 
-			if err = goose.SetDialect("postgres"); err != nil {
-				return fmt.Errorf("goose.SetDialect failed: %w", err)
-			}
-
-			if err = goose.UpContext(cmd.Context(), stdlib.OpenDBFromPool(conn), path); err != nil {
-				return fmt.Errorf("goose.Up failed: %w", err)
-			}
-
-			return nil
-		},
+		return migrateCmd
 	})
+}
 
-	cmd.AddCommand(&cobra.Command{
-		Use:   "down",
-		Short: "Roll back a single migration from the current version",
+func migrateUp(ctn di.Container) *cmd.Command {
+	return &cmd.Command{
+		Use: "up",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var (
-				err  error
-				conn *pgxpool.Pool
-			)
-			if err = container.Fill(db.DefName, &conn); err != nil {
-				return err
-			}
-			defer conn.Close()
-
-			if err = goose.SetDialect("postgres"); err != nil {
-				return fmt.Errorf("goose.SetDialect failed: %w", err)
-			}
-
-			if err = goose.DownContext(cmd.Context(), stdlib.OpenDBFromPool(conn), path); err != nil {
-				return fmt.Errorf("goose.Up failed: %w", err)
-			}
-
-			return nil
-		},
-	})
-
-	createCMD := &cobra.Command{
-		Use:   "create",
-		Short: "Create a new blank migration file",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var (
-				err  error
-				name string
-			)
-			if name, err = cmd.Flags().GetString("name"); err != nil {
-				return fmt.Errorf("cant' get 'name' flag: %w", err)
-			}
-
 			var conn *pgxpool.Pool
-			if err = container.Fill(db.DefName, &conn); err != nil {
+			if err := ctn.Fill(db.DefPostgresName, &conn); err != nil {
 				return err
 			}
-			defer conn.Close()
 
-			if err = goose.SetDialect("postgres"); err != nil {
-				return fmt.Errorf("goose.SetDialect failed: %w", err)
+			goose.SetLogger(log.New(io.Discard, "", 0))
+			if err := goose.SetDialect(string(goose.DialectPostgres)); err != nil {
+				return fmt.Errorf("can't set goose dialect: %w", err)
 			}
 
-			if err = goose.Create(stdlib.OpenDBFromPool(conn), path, name, "sql"); err != nil {
-				return fmt.Errorf("goose.Up failed: %w", err)
+			var (
+				err  error
+				path string
+			)
+			if path, err = cmd.Flags().GetString("path"); err != nil {
+				return err
+			}
+
+			var cfg config.Config
+			if err = ctn.Fill(config.DefName, &cfg); err != nil {
+				return err
+			}
+
+			var requestTimeout time.Duration
+			if requestTimeout = cfg.GetDuration(configKeyDbRequestTimeout); requestTimeout == 0 {
+				requestTimeout = defaultDbRequestTimeout
+			}
+
+			reqCtx, cancel := context.WithTimeout(cmd.Context(), requestTimeout)
+			defer cancel()
+
+			if err = goose.UpContext(reqCtx, stdlib.OpenDBFromPool(conn), path); err != nil {
+				return fmt.Errorf("can't migrate up: %w", err)
 			}
 
 			return nil
 		},
 	}
-	createCMD.Flags().StringP("name", "n", "", "Migration name")
-	_ = createCMD.MarkFlagRequired("name")
+}
 
-	cmd.AddCommand(createCMD)
-
-	RootCmd.AddCommand(cmd)
+func migrateDown(ctn di.Container) *cmd.Command {
+	return &cmd.Command{
+		Use: "down",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return errors.New("not implemented")
+		},
+	}
 }

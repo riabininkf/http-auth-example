@@ -1,9 +1,25 @@
-postgres:
-  conn: postgres://user:password@localhost:5432/template?pool_max_conns=10
-grpc:
-  port: 8081
+auth:
+  jwt:
+    secret: "very secret key"
+    issuer: "auth-service"
+    leeway: 2m
+    accessTokenTTL: 5m
+    refreshTokenTTL: 1h
+  noAuthRoutes:
+    - POST /v1/auth/register
+    - POST /v1/auth/login
+
 http:
   port: 8080
+  shutdownTimeout: 3s
+
+db:
+  requestTimeout: 3s
+  postgres:
+    conn: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB_NAME}?pool_max_conns=10&sslmode=${POSTGRES_SSL_MODE}
+
 logger:
+  level: info
   disableCaller: false
   disableStacktrace: true
+  enableDateTime: true

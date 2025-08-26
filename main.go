@@ -3,24 +3,22 @@ package main
 import (
 	"context"
 	"os"
-	"os/signal"
 	"syscall"
 
-	"github.com/riabininkf/go-project-template/cmd"
+	"github.com/riabininkf/go-modules/cmd"
+
+	_ "github.com/riabininkf/http-auth-example/cmd"
 )
 
 func main() {
-	ctx, cancelFunc := context.WithCancel(context.Background())
-	defer cancelFunc()
+	ctx, cancel := cmd.ContextFromSignals(
+		context.Background(),
+		syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT,
+	)
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	go func() {
-		<-sigChan
-		cancelFunc()
-	}()
+	defer cancel()
 
-	if err := cmd.RootCmd.ExecuteContext(ctx); err != nil {
+	if err := cmd.Execute(ctx); err != nil {
 		os.Exit(1)
 	}
 }
