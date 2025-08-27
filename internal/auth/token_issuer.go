@@ -6,13 +6,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func NewIssuer(
+func NewTokenIssuer(
 	issuer string,
 	secret string,
 	accessTokenTTL time.Duration,
 	refreshTokenTTL time.Duration,
-) *Issuer {
-	return &Issuer{
+) *TokenIssuer {
+	return &TokenIssuer{
 		issuer:          issuer,
 		secret:          secret,
 		accessTokenTTL:  accessTokenTTL,
@@ -21,26 +21,26 @@ func NewIssuer(
 }
 
 const (
-	tokenNameAccessToken  = "access_token"
-	tokenNameRefreshToken = "refresh_token"
+	tokenTypeAccessToken  = "access_token"
+	tokenTypeRefreshToken = "refresh_token"
 )
 
-type Issuer struct {
+type TokenIssuer struct {
 	issuer          string
 	secret          string
 	accessTokenTTL  time.Duration
 	refreshTokenTTL time.Duration
 }
 
-func (i *Issuer) IssueAccessToken(userID string) (string, error) {
-	return i.issueToken(userID, i.accessTokenTTL, tokenNameAccessToken)
+func (i *TokenIssuer) IssueAccessToken(userID string) (string, error) {
+	return i.issueToken(userID, i.accessTokenTTL, tokenTypeAccessToken)
 }
 
-func (i *Issuer) IssueRefreshToken(userID string) (string, error) {
-	return i.issueToken(userID, i.refreshTokenTTL, tokenNameRefreshToken)
+func (i *TokenIssuer) IssueRefreshToken(userID string) (string, error) {
+	return i.issueToken(userID, i.refreshTokenTTL, tokenTypeRefreshToken)
 }
 
-func (i *Issuer) issueToken(userID string, ttl time.Duration, tokenType string) (string, error) {
+func (i *TokenIssuer) issueToken(userID string, ttl time.Duration, tokenType string) (string, error) {
 	now := time.Now()
 
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

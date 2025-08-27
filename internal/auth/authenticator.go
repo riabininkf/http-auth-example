@@ -6,19 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/riabininkf/go-modules/logger"
 )
 
-var (
-	ErrTokenMissing = errors.New("jwt token is missing")
-)
+var ErrTokenMissing = errors.New("jwt token is missing")
 
 func NewAuthenticator(
-	secret string,
-	log *logger.Logger,
-	parser JwtParser,
+	verifier AccessTokenVerifier,
 	noAuthRoutes []string,
 ) *Authenticator {
 	methods := make(map[string]struct{}, len(noAuthRoutes))
@@ -27,9 +20,7 @@ func NewAuthenticator(
 	}
 
 	return &Authenticator{
-		secret:       secret,
-		log:          log,
-		parser:       parser,
+		verifier:     verifier,
 		noAuthRoutes: methods,
 	}
 }
@@ -37,73 +28,37 @@ func NewAuthenticator(
 type (
 	// Authenticator is responsible for JWT authentication and validation of requests.
 	Authenticator struct {
-		secret string
-		log    *logger.Logger
-		parser JwtParser
-
+		verifier     AccessTokenVerifier
 		noAuthRoutes map[string]struct{}
 	}
 
-	JwtParser interface {
-		ParseWithClaims(tokenString string, claims jwt.Claims, keyFunc jwt.Keyfunc) (*jwt.Token, error)
+	AccessTokenVerifier interface {
+		VerifyAccess(ctx context.Context, token string) (string, error)
 	}
 )
 
 // Authenticate validates the Authorization header from the request
 // and returns the token's subject (user_id) or an error if invalid.
-func (a *Authenticator) Authenticate(_ context.Context, req *http.Request) (string, error) {
-	var (
-		err   error
-		token string
-	)
-	if token, err = a.parseToken(req.Header.Get("Authorization")); err != nil && a.isAuthRequired(req) {
-		return "", err
-	}
-
-	return token, nil
-}
-
-// parseToken extracts and validates the subject of a JWT token from the Authorization header.
-// Returns the subject or an error.
-func (a *Authenticator) parseToken(authHeader string) (string, error) {
-	if !strings.HasPrefix(authHeader, "Bearer ") {
+func (a *Authenticator) Authenticate(ctx context.Context, req *http.Request) (string, error) {
+	var header string
+	if header = req.Header.Get("Authorization"); header == "" || !strings.HasPrefix(header, "Bearer ") {
 		return "", ErrTokenMissing
 	}
 
-	token := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer"))
+	var token string
+	if token = strings.TrimSpace(strings.TrimPrefix(header, "Bearer")); token == "" {
+		return "", ErrTokenMissing
+	}
 
 	var (
-		err         error
-		claims      jwt.MapClaims
-		parsedToken *jwt.Token
+		err    error
+		userID string
 	)
-	if parsedToken, err = a.parser.ParseWithClaims(token, &claims, func(token *jwt.Token) (any, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, jwt.ErrSignatureInvalid
-		}
-
-		return []byte(a.secret), nil
-	}); err != nil {
+	if userID, err = a.verifier.VerifyAccess(ctx, token); err != nil && a.isAuthRequired(req) {
 		return "", err
 	}
 
-	if !parsedToken.Valid {
-		return "", errors.New("invalid token")
-	}
-
-	if tokenType, ok := claims["typ"].(string); !ok || tokenType != tokenNameAccessToken {
-		return "", errors.New("invalid token type")
-	}
-
-	var (
-		ok      bool
-		subject string
-	)
-	if subject, ok = claims["sub"].(string); !ok || subject == "" {
-		return "", errors.New("subject is missing")
-	}
-
-	return subject, nil
+	return userID, nil
 }
 
 // isAuthRequired determines if authentication is required for the given HTTP request

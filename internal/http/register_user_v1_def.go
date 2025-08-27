@@ -27,8 +27,8 @@ func init() {
 					return nil, err
 				}
 
-				var issuer *auth.Issuer
-				if err := ctn.Fill(auth.DefIssuerName, &issuer); err != nil {
+				var issuer *auth.TokenIssuer
+				if err := ctn.Fill(auth.DefTokenIssuerName, &issuer); err != nil {
 					return nil, err
 				}
 
