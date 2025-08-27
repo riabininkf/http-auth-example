@@ -10,7 +10,7 @@ import (
 	"github.com/riabininkf/go-modules/logger"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/riabininkf/http-auth-example/internal/domain/auth"
+	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
 func NewRegisterUserV1(
@@ -44,7 +44,7 @@ type (
 	}
 
 	UserRegistrar interface {
-		Save(ctx context.Context, user auth.User) error
+		Save(ctx context.Context, user domain.User) error
 	}
 )
 
@@ -74,14 +74,14 @@ func (h *RegisterUserV1) Handle(ctx context.Context, req *RegisterUserV1Request)
 		return httpx.InternalServerError
 	}
 
-	user := auth.NewUser(
+	user := domain.NewUser(
 		uuid.NewString(),
 		req.Email,
 		string(hashedPassword),
 	)
 
 	if err = h.registrar.Save(ctx, user); err != nil {
-		if errors.Is(err, auth.ErrEmailBusy) {
+		if errors.Is(err, domain.ErrEmailBusy) {
 			h.log.Warn("user already exists")
 			return httpx.NewErrorResponse(http.StatusBadRequest, "user already exists")
 		}

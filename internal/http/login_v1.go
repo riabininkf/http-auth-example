@@ -9,7 +9,7 @@ import (
 	"github.com/riabininkf/go-modules/logger"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/riabininkf/http-auth-example/internal/domain/auth"
+	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
 func NewLogiV1(
@@ -43,7 +43,7 @@ type (
 	}
 
 	UserByEmailProvider interface {
-		GetByEmail(ctx context.Context, email string) (auth.User, error)
+		GetByEmail(ctx context.Context, email string) (domain.User, error)
 	}
 )
 
@@ -64,10 +64,10 @@ func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Respon
 
 	var (
 		err  error
-		user auth.User
+		user domain.User
 	)
 	if user, err = h.userProvider.GetByEmail(ctx, req.Email); err != nil {
-		if errors.Is(err, auth.ErrUserNotFound) {
+		if errors.Is(err, domain.ErrUserNotFound) {
 			h.log.Warn("invalid email")
 			return httpx.NewErrorResponse(http.StatusUnauthorized, "invalid email or password")
 		}

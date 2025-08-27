@@ -9,7 +9,7 @@ import (
 	"github.com/riabininkf/go-modules/logger"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/riabininkf/http-auth-example/internal/domain/auth"
+	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
 func NewUpdatePasswordV1(
@@ -37,7 +37,7 @@ type (
 	}
 
 	UserByIdProvider interface {
-		GetByID(ctx context.Context, userID string) (auth.User, error)
+		GetByID(ctx context.Context, userID string) (domain.User, error)
 	}
 
 	PasswordUpdater interface {
@@ -78,10 +78,10 @@ func (h *UpdatePasswordV1) Handle(ctx context.Context, req *UpdatePasswordV1Requ
 
 	var (
 		err  error
-		user auth.User
+		user domain.User
 	)
 	if user, err = h.userProvider.GetByID(ctx, userID); err != nil {
-		if errors.Is(err, auth.ErrUserNotFound) {
+		if errors.Is(err, domain.ErrUserNotFound) {
 			h.log.Warn("user not found")
 			return httpx.NotFound
 		}
