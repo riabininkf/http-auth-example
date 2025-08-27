@@ -43,6 +43,8 @@ func (i *Issuer) IssueRefreshToken(userID string) (string, error) {
 func (i *Issuer) issueToken(userID string, ttl time.Duration, tokenType string) (string, error) {
 	now := time.Now()
 
+	// asymmetric key is better since only the auth server should know the secret,
+	// but symmetric key is used here for simplicity as this is just an example
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"iss": i.issuer,
 		"sub": userID,
