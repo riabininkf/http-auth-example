@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"context"
@@ -7,36 +7,36 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func NewTokenVerifier(
+func NewVerifier(
 	secret string,
-	parser JwtParser,
-) *TokenVerifier {
-	return &TokenVerifier{
+	parser Parser,
+) *Verifier {
+	return &Verifier{
 		secret: secret,
 		parser: parser,
 	}
 }
 
 type (
-	TokenVerifier struct {
+	Verifier struct {
 		secret string
-		parser JwtParser
+		parser Parser
 	}
 
-	JwtParser interface {
+	Parser interface {
 		ParseWithClaims(tokenString string, claims jwt.Claims, keyFunc jwt.Keyfunc) (*jwt.Token, error)
 	}
 )
 
-func (v *TokenVerifier) VerifyAccess(ctx context.Context, token string) (string, error) {
+func (v *Verifier) VerifyAccess(ctx context.Context, token string) (string, error) {
 	return v.verify(ctx, token, tokenTypeAccessToken)
 }
 
-func (v *TokenVerifier) VerifyRefresh(ctx context.Context, token string) (string, error) {
+func (v *Verifier) VerifyRefresh(ctx context.Context, token string) (string, error) {
 	return v.verify(ctx, token, tokenTypeRefreshToken)
 }
 
-func (v *TokenVerifier) verify(_ context.Context, token string, tokenType string) (string, error) {
+func (v *Verifier) verify(_ context.Context, token string, tokenType string) (string, error) {
 	var (
 		err         error
 		claims      jwt.MapClaims

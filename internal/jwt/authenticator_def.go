@@ -1,7 +1,6 @@
-package auth
+package jwt
 
 import (
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/riabininkf/go-modules/config"
 	"github.com/riabininkf/go-modules/di"
 	"github.com/riabininkf/go-modules/logger"
@@ -28,8 +27,8 @@ func init() {
 					return nil, err
 				}
 
-				var accessTokenVerifier *TokenVerifier
-				if err := ctn.Fill(DefTokenVerifierName, &accessTokenVerifier); err != nil {
+				var accessTokenVerifier *Verifier
+				if err := ctn.Fill(DefVerifierName, &accessTokenVerifier); err != nil {
 					return nil, err
 				}
 

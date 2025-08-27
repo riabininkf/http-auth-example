@@ -15,8 +15,8 @@ import (
 	"github.com/riabininkf/go-modules/logger"
 	"github.com/spf13/cobra"
 
-	"github.com/riabininkf/http-auth-example/internal/auth"
 	handlers "github.com/riabininkf/http-auth-example/internal/http"
+	"github.com/riabininkf/http-auth-example/internal/jwt"
 )
 
 const (
@@ -74,8 +74,8 @@ func init() {
 					}
 				}
 
-				var authenticator *auth.Authenticator
-				if err := ctn.Fill(auth.DefAuthenticatorName, &authenticator); err != nil {
+				var authenticator *jwt.Authenticator
+				if err := ctn.Fill(jwt.DefAuthenticatorName, &authenticator); err != nil {
 					return err
 				}
 

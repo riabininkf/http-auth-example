@@ -5,7 +5,7 @@ import (
 	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
 
-	"github.com/riabininkf/http-auth-example/internal/auth"
+	"github.com/riabininkf/http-auth-example/internal/jwt"
 	"github.com/riabininkf/http-auth-example/internal/repository"
 )
 
@@ -22,8 +22,8 @@ func init() {
 					return nil, err
 				}
 
-				var issuer *auth.TokenIssuer
-				if err := ctn.Fill(auth.DefTokenIssuerName, &issuer); err != nil {
+				var issuer *jwt.Issuer
+				if err := ctn.Fill(jwt.DefIssuerName, &issuer); err != nil {
 					return nil, err
 				}
 

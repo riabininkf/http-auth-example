@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"time"
@@ -6,13 +6,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func NewTokenIssuer(
+func NewIssuer(
 	issuer string,
 	secret string,
 	accessTokenTTL time.Duration,
 	refreshTokenTTL time.Duration,
-) *TokenIssuer {
-	return &TokenIssuer{
+) *Issuer {
+	return &Issuer{
 		issuer:          issuer,
 		secret:          secret,
 		accessTokenTTL:  accessTokenTTL,
@@ -25,22 +25,22 @@ const (
 	tokenTypeRefreshToken = "refresh_token"
 )
 
-type TokenIssuer struct {
+type Issuer struct {
 	issuer          string
 	secret          string
 	accessTokenTTL  time.Duration
 	refreshTokenTTL time.Duration
 }
 
-func (i *TokenIssuer) IssueAccessToken(userID string) (string, error) {
+func (i *Issuer) IssueAccessToken(userID string) (string, error) {
 	return i.issueToken(userID, i.accessTokenTTL, tokenTypeAccessToken)
 }
 
-func (i *TokenIssuer) IssueRefreshToken(userID string) (string, error) {
+func (i *Issuer) IssueRefreshToken(userID string) (string, error) {
 	return i.issueToken(userID, i.refreshTokenTTL, tokenTypeRefreshToken)
 }
 
-func (i *TokenIssuer) issueToken(userID string, ttl time.Duration, tokenType string) (string, error) {
+func (i *Issuer) issueToken(userID string, ttl time.Duration, tokenType string) (string, error) {
 	now := time.Now()
 
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"time"
@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DefTokenIssuerName = "auth.token-issuer"
+	DefIssuerName = "auth.issuer"
 
 	configKeyAccessTokenTTL  = "auth.jwt.accessTokenTTL"
 	configKeyRefreshTokenTTL = "auth.jwt.refreshTokenTTL"
@@ -16,9 +16,9 @@ const (
 
 func init() {
 	di.Add(
-		di.Def[*TokenIssuer]{
-			Name: DefTokenIssuerName,
-			Build: func(ctn di.Container) (*TokenIssuer, error) {
+		di.Def[*Issuer]{
+			Name: DefIssuerName,
+			Build: func(ctn di.Container) (*Issuer, error) {
 				var cfg *config.Config
 				if err := ctn.Fill(config.DefName, &cfg); err != nil {
 					return nil, err
@@ -44,7 +44,7 @@ func init() {
 					return nil, config.NewErrMissingKey(configKeyRefreshTokenTTL)
 				}
 
-				return NewTokenIssuer(
+				return NewIssuer(
 					issuer,
 					secret,
 					accessTokenTTL,

@@ -14,13 +14,12 @@ require (
 	github.com/riabininkf/go-modules/config v0.0.3
 	github.com/riabininkf/go-modules/db v0.0.2
 	github.com/riabininkf/go-modules/di v0.0.2
-	github.com/riabininkf/go-modules/httpx v0.0.1
+	github.com/riabininkf/go-modules/httpx v0.0.2
 	github.com/riabininkf/go-modules/logger v0.0.2
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.11.1
 	github.com/tidwall/gjson v1.18.0
 	golang.org/x/crypto v0.41.0
-	golang.org/x/oauth2 v0.30.0
 )
 
 require (

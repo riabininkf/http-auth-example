@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"github.com/golang-jwt/jwt/v5"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	DefTokenVerifierName = "auth.token-verifier"
+	DefVerifierName = "auth.verifier"
 
 	configKeyIssuer = "auth.jwt.issuer"
 	configKeySecret = "auth.jwt.secret"
@@ -15,9 +15,9 @@ const (
 
 func init() {
 	di.Add(
-		di.Def[*TokenVerifier]{
-			Name: DefTokenVerifierName,
-			Build: func(ctn di.Container) (*TokenVerifier, error) {
+		di.Def[*Verifier]{
+			Name: DefVerifierName,
+			Build: func(ctn di.Container) (*Verifier, error) {
 				var cfg *config.Config
 				if err := ctn.Fill(config.DefName, &cfg); err != nil {
 					return nil, err
@@ -33,7 +33,7 @@ func init() {
 					return nil, config.NewErrMissingKey(configKeyIssuer)
 				}
 
-				return NewTokenVerifier(
+				return NewVerifier(
 					secret,
 					jwt.NewParser(
 						jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}),
