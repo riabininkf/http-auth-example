@@ -64,7 +64,7 @@ func migrateUp(ctn di.Container) *cmd.Command {
 				return err
 			}
 
-			var cfg config.Config
+			var cfg *config.Config
 			if err = ctn.Fill(config.DefName, &cfg); err != nil {
 				return err
 			}

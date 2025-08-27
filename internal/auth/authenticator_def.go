@@ -26,7 +26,7 @@ func init() {
 					return nil, err
 				}
 
-				var cfg config.Config
+				var cfg *config.Config
 				if err := ctn.Fill(config.DefName, &cfg); err != nil {
 					return nil, err
 				}

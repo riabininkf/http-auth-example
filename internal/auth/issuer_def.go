@@ -19,7 +19,7 @@ func init() {
 		di.Def[*Issuer]{
 			Name: DefIssuerName,
 			Build: func(ctn di.Container) (*Issuer, error) {
-				var cfg config.Config
+				var cfg *config.Config
 				if err := ctn.Fill(config.DefName, &cfg); err != nil {
 					return nil, err
 				}

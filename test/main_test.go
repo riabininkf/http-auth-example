@@ -62,12 +62,12 @@ func setupConfig() error {
 		return fmt.Errorf("can't build di container: %w", err)
 	}
 
-	var cfg config.Setup
+	var cfg *config.Config
 	if err = ctn.Fill(config.DefName, &cfg); err != nil {
 		return err
 	}
 
-	if err = cfg.ReadConfigFile(configPath); err != nil {
+	if err = config.ReadFromFile(configPath, cfg); err != nil {
 		return fmt.Errorf("can't read config file: %w", err)
 	}
 
