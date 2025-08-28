@@ -15,11 +15,13 @@ import (
 func NewLogiV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
+	jwtStorage JwtStorage,
 	userProvider UserByEmailProvider,
 ) *LoginV1 {
 	return &LoginV1{
 		log:          log,
 		issuer:       issuer,
+		jwtStorage:   jwtStorage,
 		userProvider: userProvider,
 	}
 }
@@ -28,6 +30,7 @@ type (
 	LoginV1 struct {
 		log          *logger.Logger
 		issuer       TokenIssuer
+		jwtStorage   JwtStorage
 		userProvider UserByEmailProvider
 	}
 
@@ -95,6 +98,11 @@ func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Respon
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(user.ID()); err != nil {
 		h.log.Error("can't issue refresh token", logger.Error(err))
+	}
+
+	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {
+		h.log.Error("can't save refresh token", logger.Error(err))
+		return httpx.InternalServerError
 	}
 
 	return httpx.NewJsonResponse(

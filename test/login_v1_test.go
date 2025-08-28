@@ -53,7 +53,7 @@ func TestLoginV1(t *testing.T) {
 	t.Run("positive case", func(t *testing.T) {
 		email, password := gofakeit.Email(), gofakeit.Name()
 
-		userID := registerUserV1(t, email, password)
+		registrationResp := registerUserV1(t, email, password)
 
 		statusCode, resp := sendLoginV1Request(t, bytes.NewReader(
 			[]byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, email, password)),
@@ -61,7 +61,7 @@ func TestLoginV1(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, statusCode)
 
-		assert.Equal(t, userID, resp.Get("user_id").String(), "different user_id")
+		assert.Equal(t, registrationResp.UserID, resp.Get("user_id").String(), "different user_id")
 		assert.True(t, resp.Get("access_token").Exists(), "access_token is missing")
 		assert.True(t, resp.Get("refresh_token").Exists(), "refresh_token is missing")
 	})

@@ -42,20 +42,32 @@ type (
 func (a *Authenticator) Authenticate(ctx context.Context, req *http.Request) (string, error) {
 	var header string
 	if header = req.Header.Get("Authorization"); header == "" || !strings.HasPrefix(header, "Bearer ") {
-		return "", ErrTokenMissing
+		if a.isAuthRequired(req) {
+			return "", ErrTokenMissing
+		}
+
+		return "", nil
 	}
 
 	var token string
 	if token = strings.TrimSpace(strings.TrimPrefix(header, "Bearer")); token == "" {
-		return "", ErrTokenMissing
+		if a.isAuthRequired(req) {
+			return "", ErrTokenMissing
+		}
+
+		return "", nil
 	}
 
 	var (
 		err    error
 		userID string
 	)
-	if userID, err = a.verifier.VerifyAccess(ctx, token); err != nil && a.isAuthRequired(req) {
-		return "", err
+	if userID, err = a.verifier.VerifyAccess(ctx, token); err != nil {
+		if a.isAuthRequired(req) {
+			return "", err
+		}
+
+		return "", nil
 	}
 
 	return userID, nil

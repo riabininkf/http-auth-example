@@ -16,20 +16,23 @@ import (
 func NewRegisterUserV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
+	jwtStorage JwtStorage,
 	registrar UserRegistrar,
 ) *RegisterUserV1 {
 	return &RegisterUserV1{
-		log:       log,
-		issuer:    issuer,
-		registrar: registrar,
+		log:        log,
+		issuer:     issuer,
+		jwtStorage: jwtStorage,
+		registrar:  registrar,
 	}
 }
 
 type (
 	RegisterUserV1 struct {
-		log       *logger.Logger
-		issuer    TokenIssuer
-		registrar UserRegistrar
+		log        *logger.Logger
+		issuer     TokenIssuer
+		jwtStorage JwtStorage
+		registrar  UserRegistrar
 	}
 
 	RegisterUserV1Request struct {
@@ -99,6 +102,11 @@ func (h *RegisterUserV1) Handle(ctx context.Context, req *RegisterUserV1Request)
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(user.ID()); err != nil {
 		h.log.Error("can't issue refresh token", logger.Error(err))
+	}
+
+	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {
+		h.log.Error("can't save refresh token", logger.Error(err))
+		return httpx.InternalServerError
 	}
 
 	return httpx.NewJsonResponse(

@@ -11,20 +11,23 @@ import (
 func NewRefreshV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
+	jwtStorage JwtStorage,
 	verifier RefreshTokenVerifier,
 ) *RefreshV1 {
 	return &RefreshV1{
-		log:      log,
-		issuer:   issuer,
-		verifier: verifier,
+		log:        log,
+		issuer:     issuer,
+		jwtStorage: jwtStorage,
+		verifier:   verifier,
 	}
 }
 
 type (
 	RefreshV1 struct {
-		log      *logger.Logger
-		issuer   TokenIssuer
-		verifier RefreshTokenVerifier
+		log        *logger.Logger
+		issuer     TokenIssuer
+		jwtStorage JwtStorage
+		verifier   RefreshTokenVerifier
 	}
 
 	RefreshV1Request struct {
@@ -52,12 +55,17 @@ func (h *RefreshV1) Handle(ctx context.Context, req *RefreshV1Request) *httpx.Re
 		return httpx.NewErrorResponse(http.StatusBadRequest, "refresh_token is required")
 	}
 
+	if err := h.jwtStorage.Pop(ctx, req.RefreshToken); err != nil {
+		h.log.Warn("failed to refresh token from the storage", logger.Error(err))
+		return httpx.NewErrorResponse(http.StatusUnauthorized, "invalid refresh token")
+	}
+
 	var (
 		err    error
 		userID string
 	)
 	if userID, err = h.verifier.VerifyRefresh(ctx, req.RefreshToken); err != nil {
-		h.log.Warn("invalid refresh token")
+		h.log.Warn("failed to verify refresh token", logger.Error(err))
 		return httpx.NewErrorResponse(http.StatusUnauthorized, "invalid refresh token")
 	}
 
@@ -70,6 +78,11 @@ func (h *RefreshV1) Handle(ctx context.Context, req *RefreshV1Request) *httpx.Re
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(userID); err != nil {
 		h.log.Error("can't issue refresh token", logger.Error(err))
+		return httpx.InternalServerError
+	}
+
+	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {
+		h.log.Error("can't save refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 

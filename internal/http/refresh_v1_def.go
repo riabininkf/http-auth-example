@@ -31,9 +31,15 @@ func init() {
 					return nil, err
 				}
 
+				var storage *jwt.Storage
+				if err := ctn.Fill(jwt.DefStorageName, &storage); err != nil {
+					return nil, err
+				}
+
 				return httpx.WrapHandler(log, NewRefreshV1(
 					log,
 					issuer,
+					storage,
 					verifier,
 				)), nil
 			},

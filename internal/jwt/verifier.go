@@ -39,10 +39,10 @@ func (v *Verifier) VerifyRefresh(ctx context.Context, token string) (string, err
 func (v *Verifier) verify(_ context.Context, token string, tokenType string) (string, error) {
 	var (
 		err         error
-		claims      jwt.MapClaims
+		claims      claimsWithType
 		parsedToken *jwt.Token
 	)
-	if parsedToken, err = v.parser.ParseWithClaims(token, claims, func(token *jwt.Token) (any, error) {
+	if parsedToken, err = v.parser.ParseWithClaims(token, &claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
@@ -56,17 +56,13 @@ func (v *Verifier) verify(_ context.Context, token string, tokenType string) (st
 		return "", errors.New("invalid token")
 	}
 
-	if parsedType, ok := claims["typ"].(string); !ok || parsedType != tokenType {
+	if claims.Type != tokenType {
 		return "", jwt.ErrTokenInvalidClaims
 	}
 
-	var (
-		ok      bool
-		subject string
-	)
-	if subject, ok = claims["sub"].(string); !ok || subject == "" {
+	if claims.Subject == "" {
 		return "", jwt.ErrTokenInvalidClaims
 	}
 
-	return subject, nil
+	return claims.Subject, nil
 }

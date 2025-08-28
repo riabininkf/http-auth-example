@@ -10,6 +10,8 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
+
+	handlers "github.com/riabininkf/http-auth-example/internal/http"
 )
 
 func TestRegisterUserV1(t *testing.T) {
@@ -67,7 +69,7 @@ func sendRegistrationV1Request(t *testing.T, body io.Reader) (int, gjson.Result)
 	return sendHttpRequest(t, http.MethodPost, "http://localhost:8080/v1/auth/register", body, "")
 }
 
-func registerUserV1(t *testing.T, email string, password string) string {
+func registerUserV1(t *testing.T, email string, password string) *handlers.RegisterUserV1Response {
 	statusCode, resp := sendRegistrationV1Request(t, bytes.NewReader(
 		[]byte(fmt.Sprintf(`{"email":"%s", "password":"%s"}`, email, password)),
 	))
@@ -78,5 +80,9 @@ func registerUserV1(t *testing.T, email string, password string) string {
 	assert.NotEmpty(t, resp.Get("access_token").String(), "access_token is missing")
 	assert.NotEmpty(t, resp.Get("refresh_token").String(), "refresh_token is missing")
 
-	return resp.Get("user_id").String()
+	return &handlers.RegisterUserV1Response{
+		UserID:       resp.Get("user_id").String(),
+		AccessToken:  resp.Get("access_token").String(),
+		RefreshToken: resp.Get("refresh_token").String(),
+	}
 }

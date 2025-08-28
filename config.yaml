@@ -7,6 +7,7 @@ auth:
   noAuthRoutes:
     - POST /v1/auth/register
     - POST /v1/auth/login
+    - POST /v1/auth/refresh
 
 http:
   port: 8080
@@ -16,6 +17,10 @@ db:
   requestTimeout: 3s
   postgres:
     conn: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB_NAME}?pool_max_conns=10&sslmode=${POSTGRES_SSL_MODE}
+
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
 
 logger:
   level: info
