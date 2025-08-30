@@ -35,7 +35,7 @@ func init() {
 					return nil, err
 				}
 
-				return NewRegisterUserV1(
+				return NewRegisterV1(
 					log,
 					issuer,
 					storage,

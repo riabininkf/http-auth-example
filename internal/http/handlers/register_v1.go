@@ -15,7 +15,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
-func NewRegisterUserV1(
+func NewRegisterV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
 	jwtStorage JwtStorage,
