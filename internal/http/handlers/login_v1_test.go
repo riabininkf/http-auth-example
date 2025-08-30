@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -131,8 +130,6 @@ func TestLoginV1_Handle(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			ctx := context.Background()
-
 			req := testCase.req()
 
 			userProvider := mocks.NewUserByEmailProvider(t)
@@ -142,7 +139,7 @@ func TestLoginV1_Handle(t *testing.T) {
 				var err error
 				user, err = testCase.onGetByEmail(req)
 
-				userProvider.On("GetByEmail", ctx, req.Email).
+				userProvider.On("GetByEmail", t.Context(), req.Email).
 					Return(user, err)
 			}
 
@@ -161,7 +158,7 @@ func TestLoginV1_Handle(t *testing.T) {
 
 			jwtStorage := mocks.NewJwtStorage(t)
 			if testCase.onSaveRefreshToken != nil {
-				jwtStorage.On("Save", ctx, refreshToken).Return(testCase.onSaveRefreshToken())
+				jwtStorage.On("Save", t.Context(), refreshToken).Return(testCase.onSaveRefreshToken())
 			}
 
 			handler := handlers.NewLoginV1(
@@ -171,7 +168,7 @@ func TestLoginV1_Handle(t *testing.T) {
 				userProvider,
 			)
 
-			assert.Equal(t, testCase.expResp, handler.Handle(ctx, req))
+			assert.Equal(t, testCase.expResp, handler.Handle(t.Context(), req))
 		})
 	}
 }

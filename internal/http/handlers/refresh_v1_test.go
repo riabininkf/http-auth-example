@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -96,13 +95,11 @@ func TestRefreshV1_Handle(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			ctx := context.Background()
-
 			req := testCase.req()
 
 			jwtStorage := mocks.NewJwtStorage(t)
 			if testCase.onPop != nil {
-				jwtStorage.On("Pop", ctx, req.RefreshToken).Return(testCase.onPop())
+				jwtStorage.On("Pop", t.Context(), req.RefreshToken).Return(testCase.onPop())
 			}
 
 			refreshVerifier := mocks.NewRefreshTokenVerifier(t)
@@ -112,7 +109,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 				var err error
 				userID, err = testCase.onVerifyRefresh()
 
-				refreshVerifier.On("VerifyRefresh", ctx, req.RefreshToken).Return(userID, err)
+				refreshVerifier.On("VerifyRefresh", t.Context(), req.RefreshToken).Return(userID, err)
 			}
 
 			issuer := mocks.NewTokenIssuer(t)
@@ -134,7 +131,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			}
 
 			if testCase.onSaveRefreshToken != nil {
-				jwtStorage.On("Save", ctx, refreshToken).Return(testCase.onSaveRefreshToken())
+				jwtStorage.On("Save", t.Context(), refreshToken).Return(testCase.onSaveRefreshToken())
 			}
 
 			handler := handlers.NewRefreshV1(
@@ -144,7 +141,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 				refreshVerifier,
 			)
 
-			assert.Equal(t, testCase.expResp, handler.Handle(ctx, req))
+			assert.Equal(t, testCase.expResp, handler.Handle(t.Context(), req))
 		})
 	}
 }

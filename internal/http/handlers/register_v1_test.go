@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -96,12 +95,11 @@ func TestRegisterV1_Handle(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			ctx := context.Background()
 			req := testCase.req()
 
 			registrar := mocks.NewUserRegistrar(t)
 			if testCase.onSaveUser != nil {
-				registrar.On("Save", ctx, mock.AnythingOfType("*domain.user")).Return(testCase.onSaveUser())
+				registrar.On("Save", t.Context(), mock.AnythingOfType("*domain.user")).Return(testCase.onSaveUser())
 			}
 
 			issuer := mocks.NewTokenIssuer(t)
@@ -119,7 +117,7 @@ func TestRegisterV1_Handle(t *testing.T) {
 
 			jwtStorage := mocks.NewJwtStorage(t)
 			if testCase.onSaveRefreshToken != nil {
-				jwtStorage.On("Save", ctx, refreshToken).Return(testCase.onSaveRefreshToken())
+				jwtStorage.On("Save", t.Context(), refreshToken).Return(testCase.onSaveRefreshToken())
 			}
 
 			handler := handlers.NewRegisterV1(
@@ -129,7 +127,7 @@ func TestRegisterV1_Handle(t *testing.T) {
 				registrar,
 			)
 
-			resp := handler.Handle(ctx, req)
+			resp := handler.Handle(t.Context(), req)
 			assert.Equal(t, testCase.expResp.Status(), resp.Status())
 			assert.Equal(t, testCase.expResp.Headers(), resp.Headers())
 
