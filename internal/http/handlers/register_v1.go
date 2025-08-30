@@ -100,6 +100,7 @@ func (h *RegisterV1) Handle(ctx context.Context, req *RegisterV1Request) *httpx.
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(user.ID()); err != nil {
 		h.log.Error("can't issue refresh token", logger.Error(err))
+		return httpx.InternalServerError
 	}
 
 	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {

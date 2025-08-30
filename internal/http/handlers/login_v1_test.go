@@ -94,7 +94,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil
 			},
-			onIssueAccessToken:  func() (string, error) { return gofakeit.Name(), nil },
+			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
 			onIssueRefreshToken: func() (string, error) { return "", errors.New("test error") },
 			expResp:             httpx.InternalServerError,
 		},
@@ -104,8 +104,8 @@ func TestLoginV1_Handle(t *testing.T) {
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil
 			},
-			onIssueAccessToken:  func() (string, error) { return gofakeit.Name(), nil },
-			onIssueRefreshToken: func() (string, error) { return gofakeit.Name(), nil },
+			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
+			onIssueRefreshToken: func() (string, error) { return "refresh_token", nil },
 			onSaveRefreshToken:  func() error { return errors.New("test error") },
 			expResp:             httpx.InternalServerError,
 		},
