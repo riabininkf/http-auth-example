@@ -6,8 +6,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
+	"github.com/riabininkf/httpx"
 )
 
 func NewRefreshV1(

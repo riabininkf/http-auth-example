@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
+	"github.com/riabininkf/httpx"
 )
 
 type Middleware func(http.Handler) http.Handler

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v7"
-	"github.com/riabininkf/go-modules/httpx"
+	"github.com/riabininkf/httpx"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 

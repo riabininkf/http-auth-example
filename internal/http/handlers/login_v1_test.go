@@ -8,7 +8,7 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/google/uuid"
-	"github.com/riabininkf/go-modules/httpx"
+	"github.com/riabininkf/httpx"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"

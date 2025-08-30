@@ -8,8 +8,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
+	"github.com/riabininkf/httpx"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/riabininkf/http-auth-example/internal/domain"

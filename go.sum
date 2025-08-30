@@ -70,10 +70,10 @@ github.com/riabininkf/go-modules/db v0.0.2 h1:ZzTcX7yLj4F/wYVaWsEcVeR98OUvkCISVL
 github.com/riabininkf/go-modules/db v0.0.2/go.mod h1:9UXjFffMdbGzQWLhJula2HQiNXq5mdvvgYd79fWbN/c=
 github.com/riabininkf/go-modules/di v0.0.2 h1:sTTwFriiq6bUnQdIJjsqX9AN4cpiLNs7bewk4GjX/5Q=
 github.com/riabininkf/go-modules/di v0.0.2/go.mod h1:FxwHv3qktZDUUIMQAHMCcTPaAbKMyfWGvxs1BGAIW0E=
-github.com/riabininkf/go-modules/httpx v0.0.3 h1:7CiSc4thTWP3u9+fwhaT8QgBtq1yXYePHQAdHiXcBGI=
-github.com/riabininkf/go-modules/httpx v0.0.3/go.mod h1:wE6KAVw4L6JFy/lstvn4pN1ZCzzWrPgMm4zG+eJEYI0=
 github.com/riabininkf/go-modules/logger v0.0.2 h1:OROPAQz4IhrOZbfONsgtsoX3zFP0s1ATp7MU+5+iWZQ=
 github.com/riabininkf/go-modules/logger v0.0.2/go.mod h1:HCcuOgybjR5QbVFdEKiwvBFUnmrFSC9M3XgCRAkRzK4=
+github.com/riabininkf/httpx v0.0.2 h1:AsNlgisv7UM9UdoyKPqrKAQNdviepu9zytc/jPfNq08=
+github.com/riabininkf/httpx v0.0.2/go.mod h1:IKRKVrADn2h2HMqHaaiJV4DsUR6QBHm0G6w+3sdWc0I=
 github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0tI/otEQ=
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
@@ -97,6 +97,8 @@ github.com/spf13/pflag v1.0.7/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An
 github.com/spf13/viper v1.20.1 h1:ZMi+z/lvLyPSCoNtFCpqjy0S4kPbirhpTMwl8BkW9X4=
 github.com/spf13/viper v1.20.1/go.mod h1:P9Mdzt1zoHIG8m2eZQinpiBjo6kCmZSKBClNNqjJvu4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
+github.com/stretchr/objx v0.5.2 h1:xuMeJ0Sdp5ZMRXx/aWO6RZxdr3beISkG5/G/aIRr3pY=
+github.com/stretchr/objx v0.5.2/go.mod h1:FRsXN1f5AsAjCGJKqEizvkpNtU+EGNCLh3NxZ/8L+MA=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=

@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/riabininkf/go-modules/httpx"
+	"github.com/riabininkf/httpx"
 
 	"github.com/riabininkf/http-auth-example/internal/http/handlers"
 	"github.com/riabininkf/http-auth-example/internal/http/log"

@@ -15,11 +15,12 @@ require (
 	github.com/riabininkf/go-modules/config v0.0.3
 	github.com/riabininkf/go-modules/db v0.0.2
 	github.com/riabininkf/go-modules/di v0.0.2
-	github.com/riabininkf/go-modules/httpx v0.0.3
 	github.com/riabininkf/go-modules/logger v0.0.2
+	github.com/riabininkf/httpx v0.0.2
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.11.1
 	github.com/tidwall/gjson v1.18.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.41.0
 )
 
@@ -45,11 +46,11 @@ require (
 	github.com/spf13/cast v1.9.2 // indirect
 	github.com/spf13/pflag v1.0.7 // indirect
 	github.com/spf13/viper v1.20.1 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
