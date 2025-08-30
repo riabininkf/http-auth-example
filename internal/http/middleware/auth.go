@@ -8,28 +8,6 @@ import (
 	"github.com/riabininkf/httpx"
 )
 
-type Middleware func(http.Handler) http.Handler
-
-func Chain(h http.Handler, mws ...Middleware) http.Handler {
-	for i := len(mws) - 1; i >= 0; i-- {
-		h = mws[i](h)
-	}
-	return h
-}
-
-func Logging(log *logger.Logger) Middleware {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Debug("incoming http request",
-				logger.String("method", r.Method),
-				logger.String("path", r.URL.Path),
-			)
-
-			next.ServeHTTP(w, r)
-		})
-	}
-}
-
 type Authenticator interface {
 	Authenticate(ctx context.Context, req *http.Request) (string, error)
 }

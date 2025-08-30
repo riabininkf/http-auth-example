@@ -2,9 +2,9 @@ package http
 
 import (
 	"github.com/riabininkf/go-modules/di"
+	"github.com/riabininkf/go-modules/logger"
 
 	"github.com/riabininkf/http-auth-example/internal/http/handlers"
-	"github.com/riabininkf/http-auth-example/internal/http/log"
 )
 
 const DefServiceName = "http.service"
@@ -14,8 +14,8 @@ func init() {
 		di.Def[*Service]{
 			Name: DefServiceName,
 			Build: func(ctn di.Container) (*Service, error) {
-				var errorLogger *log.ErrorLogger
-				if err := ctn.Fill(log.DefErrorLoggerName, &errorLogger); err != nil {
+				var log *logger.Logger
+				if err := ctn.Fill(logger.DefName, &log); err != nil {
 					return nil, err
 				}
 
@@ -40,7 +40,7 @@ func init() {
 				}
 
 				return NewService(
-					errorLogger,
+					log,
 					loginV1,
 					refreshV1,
 					registerV1,
