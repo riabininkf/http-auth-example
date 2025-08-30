@@ -15,7 +15,7 @@ require (
 	github.com/riabininkf/go-modules/config v0.0.3
 	github.com/riabininkf/go-modules/db v0.0.2
 	github.com/riabininkf/go-modules/di v0.0.2
-	github.com/riabininkf/go-modules/httpx v0.0.2
+	github.com/riabininkf/go-modules/httpx v0.0.3
 	github.com/riabininkf/go-modules/logger v0.0.2
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.11.1

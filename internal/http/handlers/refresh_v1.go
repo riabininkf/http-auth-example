@@ -1,4 +1,6 @@
-package http
+package handlers
+
+//go:generate mockery --name RefreshTokenVerifier --output ./mocks --outpkg mocks --filename refresh_token_verifier.go --structname RefreshTokenVerifier
 
 import (
 	"context"
@@ -45,10 +47,6 @@ type (
 	}
 )
 
-func (h *RefreshV1) Path() string {
-	return "POST /v1/auth/refresh"
-}
-
 func (h *RefreshV1) Handle(ctx context.Context, req *RefreshV1Request) *httpx.Response {
 	if req.RefreshToken == "" {
 		h.log.Warn("refresh_token is missing")
@@ -56,7 +54,7 @@ func (h *RefreshV1) Handle(ctx context.Context, req *RefreshV1Request) *httpx.Re
 	}
 
 	if err := h.jwtStorage.Pop(ctx, req.RefreshToken); err != nil {
-		h.log.Warn("failed to refresh token from the storage", logger.Error(err))
+		h.log.Warn("failed to pop refresh token from the storage", logger.Error(err))
 		return httpx.NewErrorResponse(http.StatusUnauthorized, "invalid refresh token")
 	}
 

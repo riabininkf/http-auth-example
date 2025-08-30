@@ -1,4 +1,6 @@
-package http
+package handlers
+
+//go:generate mockery --name UserRegistrar --output ./mocks --outpkg mocks --filename user_registrar.go --structname UserRegistrar
 
 import (
 	"context"
@@ -18,8 +20,8 @@ func NewRegisterUserV1(
 	issuer TokenIssuer,
 	jwtStorage JwtStorage,
 	registrar UserRegistrar,
-) *RegisterUserV1 {
-	return &RegisterUserV1{
+) *RegisterV1 {
+	return &RegisterV1{
 		log:        log,
 		issuer:     issuer,
 		jwtStorage: jwtStorage,
@@ -28,19 +30,19 @@ func NewRegisterUserV1(
 }
 
 type (
-	RegisterUserV1 struct {
+	RegisterV1 struct {
 		log        *logger.Logger
 		issuer     TokenIssuer
 		jwtStorage JwtStorage
 		registrar  UserRegistrar
 	}
 
-	RegisterUserV1Request struct {
+	RegisterV1Request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
-	RegisterUserV1Response struct {
+	RegisterV1Response struct {
 		UserID       string `json:"user_id"`
 		AccessToken  string `json:"access_token"`
 		RefreshToken string `json:"refresh_token"`
@@ -51,11 +53,7 @@ type (
 	}
 )
 
-func (h *RegisterUserV1) Path() string {
-	return "POST /v1/auth/register"
-}
-
-func (h *RegisterUserV1) Handle(ctx context.Context, req *RegisterUserV1Request) *httpx.Response {
+func (h *RegisterV1) Handle(ctx context.Context, req *RegisterV1Request) *httpx.Response {
 	if req.Email == "" {
 		h.log.Warn("email is missing")
 		return httpx.NewErrorResponse(http.StatusBadRequest, "email is required")
@@ -111,7 +109,7 @@ func (h *RegisterUserV1) Handle(ctx context.Context, req *RegisterUserV1Request)
 
 	return httpx.NewJsonResponse(
 		httpx.WithStatus(http.StatusCreated),
-		httpx.WithBody(&RegisterUserV1Response{
+		httpx.WithBody(&RegisterV1Response{
 			UserID:       user.ID(),
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,

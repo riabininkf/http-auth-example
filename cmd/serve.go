@@ -11,11 +11,11 @@ import (
 	"github.com/riabininkf/go-modules/cmd"
 	"github.com/riabininkf/go-modules/config"
 	"github.com/riabininkf/go-modules/di"
-	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
 	"github.com/spf13/cobra"
 
 	handlers "github.com/riabininkf/http-auth-example/internal/http"
+	"github.com/riabininkf/http-auth-example/internal/http/middleware"
 	"github.com/riabininkf/http-auth-example/internal/jwt"
 )
 
@@ -26,9 +26,11 @@ const (
 	configKeyHttpShutdownTimeout = "http.shutdownTimeout"
 )
 
-type Handler interface {
-	Path() string
-	HandleFunc() func(writer http.ResponseWriter, req *http.Request)
+func registerHttpRoutes(mux *http.ServeMux, service *handlers.Service) {
+	mux.HandleFunc("POST /v1/auth/login", service.LoginV1())
+	mux.HandleFunc("POST /v1/auth/refresh", service.RefreshV1())
+	mux.HandleFunc("POST /v1/auth/register", service.RegisterV1())
+	mux.HandleFunc("POST /v1/user/password", service.UpdatePasswordV1())
 }
 
 func init() {
@@ -56,23 +58,14 @@ func init() {
 					shutdownTimeout = cfg.GetDuration(configKeyHttpShutdownTimeout)
 				}
 
+				var httpService *handlers.Service
+				if err := ctn.Fill(handlers.DefServiceName, &httpService); err != nil {
+					return err
+				}
+
 				multiplexer := http.NewServeMux()
 
-				for _, def := range ctn.Definitions() {
-					for _, tag := range def.Tags {
-						if tag.Name != handlers.TagHandlerName {
-							continue
-						}
-
-						var handler Handler
-						if err := ctn.Fill(def.Name, &handler); err != nil {
-							return err
-						}
-
-						multiplexer.HandleFunc(handler.Path(), handler.HandleFunc())
-						log.Info("http handler registered", logger.String("path", handler.Path()))
-					}
-				}
+				registerHttpRoutes(multiplexer, httpService)
 
 				var authenticator *jwt.Authenticator
 				if err := ctn.Fill(jwt.DefAuthenticatorName, &authenticator); err != nil {
@@ -81,10 +74,10 @@ func init() {
 
 				server := &http.Server{
 					Addr: net.JoinHostPort("", strconv.Itoa(port)),
-					Handler: httpx.Chain(
+					Handler: middleware.Chain(
 						multiplexer,
-						httpx.Logging(log),
-						httpx.Auth(log, authenticator),
+						middleware.Logging(log),
+						middleware.Auth(log, authenticator),
 					),
 				}
 

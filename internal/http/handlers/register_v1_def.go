@@ -1,22 +1,20 @@
-package http
+package handlers
 
 import (
 	"github.com/riabininkf/go-modules/di"
-	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
 
 	"github.com/riabininkf/http-auth-example/internal/jwt"
 	"github.com/riabininkf/http-auth-example/internal/repository"
 )
 
-const DefRegisterUserV1Name = "http.register-user-v1"
+const DefRegisterV1Name = "http.register-v1"
 
 func init() {
 	di.Add(
-		di.Def[*httpx.Handler]{
-			Name: DefRegisterUserV1Name,
-			Tags: []di.Tag{{Name: TagHandlerName}},
-			Build: func(ctn di.Container) (*httpx.Handler, error) {
+		di.Def[*RegisterV1]{
+			Name: DefRegisterV1Name,
+			Build: func(ctn di.Container) (*RegisterV1, error) {
 				var log *logger.Logger
 				if err := ctn.Fill(logger.DefName, &log); err != nil {
 					return nil, err
@@ -37,12 +35,12 @@ func init() {
 					return nil, err
 				}
 
-				return httpx.WrapHandler(log, NewRegisterUserV1(
+				return NewRegisterUserV1(
 					log,
 					issuer,
 					storage,
 					usersRep,
-				)), nil
+				), nil
 			},
 		},
 	)

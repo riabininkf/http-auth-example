@@ -1,4 +1,7 @@
-package http
+package handlers
+
+//go:generate mockery --name UserByIdProvider --output ./mocks --outpkg mocks --filename user_by_id_provider.go --structname UserByIdProvider
+//go:generate mockery --name PasswordUpdater --output ./mocks --outpkg mocks --filename password_updater.go --structname PasswordUpdater
 
 import (
 	"context"
@@ -44,10 +47,6 @@ type (
 		UpdatePassword(ctx context.Context, userID string, hashedPassword string) error
 	}
 )
-
-func (h *UpdatePasswordV1) Path() string {
-	return "POST /v1/user/password"
-}
 
 func (h *UpdatePasswordV1) Handle(ctx context.Context, req *UpdatePasswordV1Request) *httpx.Response {
 	if req.OldPassword == "" {

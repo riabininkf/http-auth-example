@@ -1,4 +1,6 @@
-package http
+package handlers
+
+//go:generate mockery --name UserByEmailProvider --output ./mocks --outpkg mocks --filename user_by_email_provider.go --structname UserByEmailProvider
 
 import (
 	"context"
@@ -12,7 +14,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
-func NewLogiV1(
+func NewLoginV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
 	jwtStorage JwtStorage,
@@ -49,10 +51,6 @@ type (
 		GetByEmail(ctx context.Context, email string) (domain.User, error)
 	}
 )
-
-func (h *LoginV1) Path() string {
-	return "POST /v1/auth/login"
-}
 
 func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Response {
 	if req.Email == "" {
@@ -98,6 +96,7 @@ func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Respon
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(user.ID()); err != nil {
 		h.log.Error("can't issue refresh token", logger.Error(err))
+		return httpx.InternalServerError
 	}
 
 	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {

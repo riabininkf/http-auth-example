@@ -1,22 +1,19 @@
-package http
+package handlers
 
 import (
 	"github.com/riabininkf/go-modules/di"
-	"github.com/riabininkf/go-modules/httpx"
 	"github.com/riabininkf/go-modules/logger"
 
 	"github.com/riabininkf/http-auth-example/internal/jwt"
-	"github.com/riabininkf/http-auth-example/internal/repository"
 )
 
-const DefLoginV1Name = "http.login-v1"
+const DefRefreshV1Name = "http.refresh-v1"
 
 func init() {
 	di.Add(
-		di.Def[*httpx.Handler]{
-			Name: DefLoginV1Name,
-			Tags: []di.Tag{{Name: TagHandlerName}},
-			Build: func(ctn di.Container) (*httpx.Handler, error) {
+		di.Def[*RefreshV1]{
+			Name: DefRefreshV1Name,
+			Build: func(ctn di.Container) (*RefreshV1, error) {
 				var log *logger.Logger
 				if err := ctn.Fill(logger.DefName, &log); err != nil {
 					return nil, err
@@ -27,8 +24,8 @@ func init() {
 					return nil, err
 				}
 
-				var usersRep *repository.Users
-				if err := ctn.Fill(repository.DefUsersName, &usersRep); err != nil {
+				var verifier *jwt.Verifier
+				if err := ctn.Fill(jwt.DefVerifierName, &verifier); err != nil {
 					return nil, err
 				}
 
@@ -37,12 +34,12 @@ func init() {
 					return nil, err
 				}
 
-				return httpx.WrapHandler(log, NewLogiV1(
+				return NewRefreshV1(
 					log,
 					issuer,
 					storage,
-					usersRep,
-				)), nil
+					verifier,
+				), nil
 			},
 		},
 	)
