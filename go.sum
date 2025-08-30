@@ -72,8 +72,8 @@ github.com/riabininkf/go-modules/di v0.0.2 h1:sTTwFriiq6bUnQdIJjsqX9AN4cpiLNs7be
 github.com/riabininkf/go-modules/di v0.0.2/go.mod h1:FxwHv3qktZDUUIMQAHMCcTPaAbKMyfWGvxs1BGAIW0E=
 github.com/riabininkf/go-modules/logger v0.0.2 h1:OROPAQz4IhrOZbfONsgtsoX3zFP0s1ATp7MU+5+iWZQ=
 github.com/riabininkf/go-modules/logger v0.0.2/go.mod h1:HCcuOgybjR5QbVFdEKiwvBFUnmrFSC9M3XgCRAkRzK4=
-github.com/riabininkf/httpx v0.0.2 h1:AsNlgisv7UM9UdoyKPqrKAQNdviepu9zytc/jPfNq08=
-github.com/riabininkf/httpx v0.0.2/go.mod h1:IKRKVrADn2h2HMqHaaiJV4DsUR6QBHm0G6w+3sdWc0I=
+github.com/riabininkf/httpx v0.0.3 h1:Muku0J7bLuFb91490TYPryiyInbM3Np5moB1IAbOemc=
+github.com/riabininkf/httpx v0.0.3/go.mod h1:ndAOWHqHB0gXQTve0zyzM3Zd8yY47H4jDvQP5uOd0P0=
 github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0tI/otEQ=
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
