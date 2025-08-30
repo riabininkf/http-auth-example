@@ -1,5 +1,7 @@
 package jwt
 
+//go:generate mockery --name AccessTokenVerifier --output ./mocks --outpkg mocks --filename access_token_verifier.go --structname AccessTokenVerifier
+
 import (
 	"context"
 	"errors"
