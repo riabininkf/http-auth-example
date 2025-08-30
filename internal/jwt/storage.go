@@ -1,5 +1,7 @@
 package jwt
 
+//go:generate mockery --name Cache --output ./mocks --outpkg mocks --filename cache.go --structname Cache
+
 import (
 	"context"
 	"crypto/sha256"
