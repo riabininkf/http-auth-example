@@ -62,7 +62,6 @@ logger:
   enableDateTime: true # adds human-readable date time to log entries
 ```
 
-
 Notes:
 - Asymmetric signing without JWKS is assumed for simplicity. The `auth.jwt.secret` field can hold a PEM-encoded private key or a shared secret. Replace with private key material when using an asymmetric algorithm; JWKS distribution is intentionally omitted to keep configuration minimal.
 - Ensure environment variables referenced in the config are exported prior to starting the service.
@@ -93,6 +92,24 @@ export POSTGRES_DB_NAME=auth
 export POSTGRES_SSL_MODE=disable
 export REDIS_HOST=localhost 
 export REDIS_PORT=6379
+```
+
+## Project structure
+```text
+.
+├── cmd/                         # CLI entrypoints (cobra commands)
+├── internal/                    # Private application modules
+│   ├── domain/                  # Core domain DTOs and errors
+│   ├── http/                    # HTTP service, routing, middleware, handlers
+│   │   ├── handlers/            # Request handlers (+ tests and mocks)
+│   │   └── middleware/          # HTTP middlewares
+│   ├── jwt/                     # JWT issuer, verifier, authenticator, storage
+│   ├── redis/                   # Redis integration
+│   └── repository/              # Persistence layer
+├── migrations/                  # Database migrations
+├── test/                        # Integration tests
+├── config.yaml
+└── main.go                      
 ```
 
 ## Most important dependencies
