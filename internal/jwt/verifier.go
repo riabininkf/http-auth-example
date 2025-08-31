@@ -1,5 +1,7 @@
 package jwt
 
+//go:generate mockery --name Parser --output ./mocks --outpkg mocks --filename parser.go --structname Parser
+
 import (
 	"context"
 	"errors"
