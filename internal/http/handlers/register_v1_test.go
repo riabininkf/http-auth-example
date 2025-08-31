@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -49,14 +48,14 @@ func TestRegisterV1_Handle(t *testing.T) {
 		{
 			name:       "can't save user",
 			req:        generateRequest,
-			onSaveUser: func() error { return errors.New("test error") },
+			onSaveUser: func() error { return assert.AnError },
 			expResp:    httpx.InternalServerError,
 		},
 		{
 			name:               "can't issue access token",
 			req:                generateRequest,
 			onSaveUser:         func() error { return nil },
-			onIssueAccessToken: func() (string, error) { return "", errors.New("test error") },
+			onIssueAccessToken: func() (string, error) { return "", assert.AnError },
 			expResp:            httpx.InternalServerError,
 		},
 		{
@@ -64,7 +63,7 @@ func TestRegisterV1_Handle(t *testing.T) {
 			req:                 generateRequest,
 			onSaveUser:          func() error { return nil },
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
-			onIssueRefreshToken: func() (string, error) { return "", errors.New("test error") },
+			onIssueRefreshToken: func() (string, error) { return "", assert.AnError },
 			expResp:             httpx.InternalServerError,
 		},
 		{
@@ -73,7 +72,7 @@ func TestRegisterV1_Handle(t *testing.T) {
 			onSaveUser:          func() error { return nil },
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
 			onIssueRefreshToken: func() (string, error) { return "refresh_token", nil },
-			onSaveRefreshToken:  func() error { return errors.New("test error") },
+			onSaveRefreshToken:  func() error { return assert.AnError },
 			expResp:             httpx.InternalServerError,
 		},
 		{

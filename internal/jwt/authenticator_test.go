@@ -1,7 +1,6 @@
 package jwt_test
 
 import (
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,8 +12,6 @@ import (
 )
 
 func TestAuthenticator_Authenticate(t *testing.T) {
-	testError := errors.New("test error")
-
 	testCases := []struct {
 		name           string
 		req            func() *http.Request
@@ -64,8 +61,8 @@ func TestAuthenticator_Authenticate(t *testing.T) {
 				req.Header.Set("Authorization", "Bearer test-token")
 				return req
 			},
-			onVerifyAccess: func() (string, error) { return "", testError },
-			expError:       testError,
+			onVerifyAccess: func() (string, error) { return "", assert.AnError },
+			expError:       assert.AnError,
 		},
 		{
 			name: "verification failed (no auth required)",
@@ -74,7 +71,7 @@ func TestAuthenticator_Authenticate(t *testing.T) {
 				req.Header.Set("Authorization", "Bearer test-token")
 				return req
 			},
-			onVerifyAccess: func() (string, error) { return "", testError },
+			onVerifyAccess: func() (string, error) { return "", assert.AnError },
 			noAuthUrls:     []string{"GET /test"},
 			expError:       nil,
 		},

@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -63,12 +62,10 @@ func TestLoginV1_Handle(t *testing.T) {
 			expResp: httpx.NewErrorResponse(http.StatusUnauthorized, "invalid email or password"),
 		},
 		{
-			name: "can't get user by email",
-			req:  generateRequest,
-			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
-				return nil, errors.New("test error")
-			},
-			expResp: httpx.InternalServerError,
+			name:         "can't get user by email",
+			req:          generateRequest,
+			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) { return nil, assert.AnError },
+			expResp:      httpx.InternalServerError,
 		},
 		{
 			name: "invalid password",
@@ -84,7 +81,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil
 			},
-			onIssueAccessToken: func() (string, error) { return "", errors.New("test error") },
+			onIssueAccessToken: func() (string, error) { return "", assert.AnError },
 			expResp:            httpx.InternalServerError,
 		},
 		{
@@ -94,7 +91,7 @@ func TestLoginV1_Handle(t *testing.T) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil
 			},
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
-			onIssueRefreshToken: func() (string, error) { return "", errors.New("test error") },
+			onIssueRefreshToken: func() (string, error) { return "", assert.AnError },
 			expResp:             httpx.InternalServerError,
 		},
 		{
@@ -105,7 +102,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			},
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
 			onIssueRefreshToken: func() (string, error) { return "refresh_token", nil },
-			onSaveRefreshToken:  func() error { return errors.New("test error") },
+			onSaveRefreshToken:  func() error { return assert.AnError },
 			expResp:             httpx.InternalServerError,
 		},
 		{

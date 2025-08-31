@@ -2,7 +2,6 @@ package jwt_test
 
 import (
 	"crypto/sha256"
-	"errors"
 	"testing"
 	"time"
 
@@ -14,13 +13,11 @@ import (
 
 func TestStorage_Save(t *testing.T) {
 	t.Run("can't save into cache", func(t *testing.T) {
-		expError := errors.New("test error")
-
 		cache := mocks.NewCache(t)
-		cache.On("Set", t.Context(), hashStorageKey("test_key"), "", time.Second*5).Return(expError)
+		cache.On("Set", t.Context(), hashStorageKey("test_key"), "", time.Second*5).Return(assert.AnError)
 
 		storage := jwt.NewStorage(time.Second*5, cache)
-		assert.Equal(t, expError, storage.Save(t.Context(), "test_key"))
+		assert.Equal(t, assert.AnError, storage.Save(t.Context(), "test_key"))
 	})
 
 	t.Run("positive case", func(t *testing.T) {
@@ -34,13 +31,11 @@ func TestStorage_Save(t *testing.T) {
 
 func TestStorage_Pop(t *testing.T) {
 	t.Run("can't pop from cache", func(t *testing.T) {
-		expError := errors.New("test error")
-
 		cache := mocks.NewCache(t)
-		cache.On("Pop", t.Context(), hashStorageKey("test_key")).Return(expError)
+		cache.On("Pop", t.Context(), hashStorageKey("test_key")).Return(assert.AnError)
 
 		storage := jwt.NewStorage(time.Second*5, cache)
-		assert.Equal(t, expError, storage.Pop(t.Context(), "test_key"))
+		assert.Equal(t, assert.AnError, storage.Pop(t.Context(), "test_key"))
 	})
 
 	t.Run("positive case", func(t *testing.T) {

@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -90,7 +89,7 @@ func TestNewUpdatePasswordV1(t *testing.T) {
 			req:    generateRequest,
 			userID: "user_id",
 			onGetUserByID: func() (domain.User, error) {
-				return nil, errors.New("test error")
+				return nil, assert.AnError
 			},
 			expResp: httpx.InternalServerError,
 		},
@@ -110,7 +109,7 @@ func TestNewUpdatePasswordV1(t *testing.T) {
 			onGetUserByID: func() (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), gofakeit.Email(), generatePasswordHash(t, "old_password")), nil
 			},
-			onUpdatePassword: func() error { return errors.New("test error") },
+			onUpdatePassword: func() error { return assert.AnError },
 			expResp:          httpx.InternalServerError,
 		},
 		{

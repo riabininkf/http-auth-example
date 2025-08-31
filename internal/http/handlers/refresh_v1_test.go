@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -37,14 +36,14 @@ func TestRefreshV1_Handle(t *testing.T) {
 		{
 			name:    "failed to pop refresh token from the storage",
 			req:     generateRequest,
-			onPop:   func() error { return errors.New("test error") },
+			onPop:   func() error { return assert.AnError },
 			expResp: httpx.NewErrorResponse(http.StatusUnauthorized, "invalid refresh token"),
 		},
 		{
 			name:            "failed to verify refresh token",
 			req:             generateRequest,
 			onPop:           func() error { return nil },
-			onVerifyRefresh: func() (string, error) { return "", errors.New("test error") },
+			onVerifyRefresh: func() (string, error) { return "", assert.AnError },
 			expResp:         httpx.NewErrorResponse(http.StatusUnauthorized, "invalid refresh token"),
 		},
 		{
@@ -52,7 +51,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			req:                generateRequest,
 			onPop:              func() error { return nil },
 			onVerifyRefresh:    func() (string, error) { return "user_id", nil },
-			onIssueAccessToken: func() (string, error) { return "", errors.New("test error") },
+			onIssueAccessToken: func() (string, error) { return "", assert.AnError },
 			expResp:            httpx.InternalServerError,
 		},
 		{
@@ -61,7 +60,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			onPop:               func() error { return nil },
 			onVerifyRefresh:     func() (string, error) { return "user_id", nil },
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
-			onIssueRefreshToken: func() (string, error) { return "", errors.New("test error") },
+			onIssueRefreshToken: func() (string, error) { return "", assert.AnError },
 			expResp:             httpx.InternalServerError,
 		},
 		{
@@ -71,7 +70,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			onVerifyRefresh:     func() (string, error) { return "user_id", nil },
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
 			onIssueRefreshToken: func() (string, error) { return "refresh_token", nil },
-			onSaveRefreshToken:  func() error { return errors.New("test error") },
+			onSaveRefreshToken:  func() error { return assert.AnError },
 			expResp:             httpx.InternalServerError,
 		},
 		{
