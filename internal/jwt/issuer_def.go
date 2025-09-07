@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	// DefIssuerName is the name of the *Issuer definition.
 	DefIssuerName = "auth.issuer"
 
 	configKeyAccessTokenTTL  = "auth.jwt.accessTokenTTL"

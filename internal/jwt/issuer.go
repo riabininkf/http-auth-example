@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// NewIssuer initializes a new Issuer instance with the specified parameters for token generation and expiration settings.
 func NewIssuer(
 	issuer string,
 	secret string,
@@ -20,12 +21,16 @@ func NewIssuer(
 	}
 }
 
+// tokenTypeAccessToken represents the type string for an access token.
+// tokenTypeRefreshToken represents the type string for a refresh token.
 const (
 	tokenTypeAccessToken  = "access_token"
 	tokenTypeRefreshToken = "refresh_token"
 )
 
 type (
+	// Issuer represents the structure for storing token issuer configurations and TTLs for access and refresh tokens.
+	// claimsWithType extends jwt.RegisteredClaims to include a Type field for specifying claim types.
 	Issuer struct {
 		issuer          string
 		secret          string
@@ -39,14 +44,17 @@ type (
 	}
 )
 
+// IssueAccessToken generates a signed access token for the specified user ID with a preset expiration time.
 func (i *Issuer) IssueAccessToken(userID string) (string, error) {
 	return i.issueToken(userID, i.accessTokenTTL, tokenTypeAccessToken)
 }
 
+// IssueRefreshToken generates a new refresh token for the given user ID using the configured TTL and secret.
 func (i *Issuer) IssueRefreshToken(userID string) (string, error) {
 	return i.issueToken(userID, i.refreshTokenTTL, tokenTypeRefreshToken)
 }
 
+// issueToken generates a signed JWT token with a specified TTL and type for the given user ID, using the Issuer's secret key.
 func (i *Issuer) issueToken(userID string, ttl time.Duration, tokenType string) (string, error) {
 	now := time.Now()
 

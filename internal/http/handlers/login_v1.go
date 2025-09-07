@@ -14,6 +14,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
+// NewLoginV1 creates a new *LoginV1 instance.
 func NewLoginV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
@@ -29,6 +30,7 @@ func NewLoginV1(
 }
 
 type (
+	// LoginV1 handles login requests.
 	LoginV1 struct {
 		log          *logger.Logger
 		issuer       TokenIssuer
@@ -36,22 +38,26 @@ type (
 		userProvider UserByEmailProvider
 	}
 
+	// LoginV1Request represents login request.
 	LoginV1Request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
+	// LoginV1Response represents successful login response.
 	LoginV1Response struct {
 		UserID       string `json:"user_id"`
 		AccessToken  string `json:"access_token"`
 		RefreshToken string `json:"refresh_token"`
 	}
 
+	// UserByEmailProvider describes UserByEmailProvider dependency.
 	UserByEmailProvider interface {
 		GetByEmail(ctx context.Context, email string) (domain.User, error)
 	}
 )
 
+// Handle processes a login request, validates credentials, and returns an appropriate HTTP response.
 func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Response {
 	if req.Email == "" {
 		h.log.Warn("email is missing")

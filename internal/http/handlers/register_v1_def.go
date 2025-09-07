@@ -8,6 +8,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/repository"
 )
 
+// DefRegisterV1Name is the name of the *RegisterV1 definition.
 const DefRegisterV1Name = "http.register-v1"
 
 func init() {

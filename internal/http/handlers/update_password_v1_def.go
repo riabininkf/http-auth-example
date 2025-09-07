@@ -7,6 +7,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/repository"
 )
 
+// DefUpdatePasswordV1Def is the name of the *UpdatePasswordV1 definition.
 const DefUpdatePasswordV1Def = "http.update-password-v1"
 
 func init() {

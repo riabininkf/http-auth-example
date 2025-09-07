@@ -7,6 +7,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/http/handlers"
 )
 
+// DefServiceName is the name of the *Service definition.
 const DefServiceName = "http.service"
 
 func init() {

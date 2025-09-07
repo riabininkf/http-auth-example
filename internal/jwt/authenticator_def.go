@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	// DefAuthenticatorName is the name of the *Authenticator definition.
 	DefAuthenticatorName = "auth.authenticator"
 
 	configKeyNoAuthRoutes = "auth.noAuthRoutes"

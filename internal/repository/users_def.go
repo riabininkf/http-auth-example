@@ -6,6 +6,7 @@ import (
 	"github.com/riabininkf/go-modules/di"
 )
 
+// DefUsersName is the name of the *Users definition.
 const DefUsersName = "repository.users"
 
 func init() {

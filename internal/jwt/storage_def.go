@@ -9,6 +9,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/redis"
 )
 
+// DefStorageName is the name of the *Storage definition.
 const DefStorageName = "jwt.storage"
 
 func init() {

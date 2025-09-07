@@ -15,6 +15,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
+// NewRegisterV1 creates a new *RegisterV1 instance.
 func NewRegisterV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
@@ -30,6 +31,7 @@ func NewRegisterV1(
 }
 
 type (
+	// RegisterV1 registers a new user and issues access and refresh tokens.
 	RegisterV1 struct {
 		log        *logger.Logger
 		issuer     TokenIssuer
@@ -37,22 +39,26 @@ type (
 		registrar  UserRegistrar
 	}
 
+	// RegisterV1Request represents register request.
 	RegisterV1Request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
+	// RegisterV1Response represents successful register response.
 	RegisterV1Response struct {
 		UserID       string `json:"user_id"`
 		AccessToken  string `json:"access_token"`
 		RefreshToken string `json:"refresh_token"`
 	}
 
+	// UserRegistrar describes UserRegistrar dependency.
 	UserRegistrar interface {
 		Save(ctx context.Context, user domain.User) error
 	}
 )
 
+// Handle processes the registration request, validates input, creates a user, and issues access and refresh tokens.
 func (h *RegisterV1) Handle(ctx context.Context, req *RegisterV1Request) *httpx.Response {
 	if req.Email == "" {
 		h.log.Warn("email is missing")

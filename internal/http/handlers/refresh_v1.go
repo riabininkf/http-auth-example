@@ -10,6 +10,7 @@ import (
 	"github.com/riabininkf/httpx"
 )
 
+// NewRefreshV1 creates a new *RefreshV1 instance.
 func NewRefreshV1(
 	log *logger.Logger,
 	issuer TokenIssuer,
@@ -25,6 +26,7 @@ func NewRefreshV1(
 }
 
 type (
+	// RefreshV1 generates a new access token using refresh token.
 	RefreshV1 struct {
 		log        *logger.Logger
 		issuer     TokenIssuer
@@ -32,21 +34,25 @@ type (
 		verifier   RefreshTokenVerifier
 	}
 
+	// RefreshV1Request represents refresh request.
 	RefreshV1Request struct {
 		RefreshToken string `json:"refresh_token"`
 	}
 
+	// RefreshV1Response represents successful refresh response.
 	RefreshV1Response struct {
 		UserID       string `json:"user_id"`
 		AccessToken  string `json:"access_token"`
 		RefreshToken string `json:"refresh_token"`
 	}
 
+	// RefreshTokenVerifier describes RefreshTokenVerifier dependency.
 	RefreshTokenVerifier interface {
 		VerifyRefresh(ctx context.Context, refreshToken string) (string, error)
 	}
 )
 
+// Handle processes a refresh request, validates the refresh token, generates new tokens, and returns the response.
 func (h *RefreshV1) Handle(ctx context.Context, req *RefreshV1Request) *httpx.Response {
 	if req.RefreshToken == "" {
 		h.log.Warn("refresh_token is missing")

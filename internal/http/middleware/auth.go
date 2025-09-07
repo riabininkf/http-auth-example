@@ -8,10 +8,13 @@ import (
 	"github.com/riabininkf/httpx"
 )
 
+// Authenticator defines the contract for validating authentication and retrieving user identifiers from HTTP requests.
 type Authenticator interface {
 	Authenticate(ctx context.Context, req *http.Request) (string, error)
 }
 
+// Auth returns a middleware that handles authentication based on the provided Authenticator and logger.
+// It validates requests, logs warnings for unauthenticated users, and enriches the request context with user ID.
 func Auth(log *logger.Logger, verifier Authenticator) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {

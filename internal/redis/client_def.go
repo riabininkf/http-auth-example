@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	// DefClientName is the name of the *Client definition.
 	DefClientName = "redis.client"
 
 	configKeyRedisHost     = "redis.host"

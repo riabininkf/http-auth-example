@@ -9,6 +9,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/http/handlers"
 )
 
+// NewService creates a new *Service instance
 func NewService(
 	log *logger.Logger,
 	loginV1 *handlers.LoginV1,
@@ -34,19 +35,23 @@ type Service struct {
 	updatePasswordV1 *handlers.UpdatePasswordV1
 }
 
+// LoginV1 returns http.HandlerFunc for LoginV1 handler
 func (s *Service) LoginV1() http.HandlerFunc {
 	return httpx.AdaptHandlerFunc(
 		newErrorLogger(s.log), s.loginV1.Handle)
 }
 
+// RefreshV1 returns http.HandlerFunc for RefreshV1 handler
 func (s *Service) RefreshV1() http.HandlerFunc {
 	return httpx.AdaptHandlerFunc(newErrorLogger(s.log), s.refreshV1.Handle)
 }
 
+// RegisterV1 returns http.HandlerFunc for RegisterV1 handler
 func (s *Service) RegisterV1() http.HandlerFunc {
 	return httpx.AdaptHandlerFunc(newErrorLogger(s.log), s.registerV1.Handle)
 }
 
+// UpdatePasswordV1 returns http.HandlerFunc for UpdatePasswordV1 handler
 func (s *Service) UpdatePasswordV1() http.HandlerFunc {
 	return httpx.AdaptHandlerFunc(newErrorLogger(s.log), s.updatePasswordV1.Handle)
 }

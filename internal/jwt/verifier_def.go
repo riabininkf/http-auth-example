@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	// DefVerifierName is the name of the *Verifier definition.
 	DefVerifierName = "auth.verifier"
 
 	configKeyIssuer = "auth.jwt.issuer"

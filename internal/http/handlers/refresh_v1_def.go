@@ -7,6 +7,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/jwt"
 )
 
+// DefRefreshV1Name is the name of the *RefreshV1 definition.
 const DefRefreshV1Name = "http.refresh-v1"
 
 func init() {

@@ -15,6 +15,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/domain"
 )
 
+// NewUpdatePasswordV1 creates a new *UpdatePasswordV1 instance.
 func NewUpdatePasswordV1(
 	log *logger.Logger,
 	userProvider UserByIdProvider,
@@ -28,26 +29,31 @@ func NewUpdatePasswordV1(
 }
 
 type (
+	// UpdatePasswordV1 updates a user's password.
 	UpdatePasswordV1 struct {
 		log             *logger.Logger
 		userProvider    UserByIdProvider
 		passwordUpdater PasswordUpdater
 	}
 
+	// UpdatePasswordV1Request represents update password request.
 	UpdatePasswordV1Request struct {
 		OldPassword string `json:"old_password"`
 		NewPassword string `json:"new_password"`
 	}
 
+	// UserByIdProvider describes UserByIdProvider dependency.
 	UserByIdProvider interface {
 		GetByID(ctx context.Context, userID string) (domain.User, error)
 	}
 
+	// PasswordUpdater describes PasswordUpdater dependency.
 	PasswordUpdater interface {
 		UpdatePassword(ctx context.Context, userID string, hashedPassword string) error
 	}
 )
 
+// Handle processes an UpdatePasswordV1 request, validating input, verifying the user, and updating the password if valid.
 func (h *UpdatePasswordV1) Handle(ctx context.Context, req *UpdatePasswordV1Request) *httpx.Response {
 	if req.OldPassword == "" {
 		h.log.Warn("old password is missing")

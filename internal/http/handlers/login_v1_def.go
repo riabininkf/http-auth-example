@@ -8,6 +8,7 @@ import (
 	"github.com/riabininkf/http-auth-example/internal/repository"
 )
 
+// DefLoginV1Name is the name of the *LoginV1 definition.
 const DefLoginV1Name = "http.login-v1"
 
 func init() {
