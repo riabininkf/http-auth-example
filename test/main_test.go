@@ -32,21 +32,21 @@ const (
 func TestMain(m *testing.M) {
 	var err error
 	if ctn, err = di.Build(); err != nil {
-		log.Fatalf("can't build di container: %s", err)
+		log.Fatalf("failed to build di container: %s", err)
 	}
 
 	if err = setupConfig(); err != nil {
-		log.Fatalf("can't setup config: %s", err)
+		log.Fatalf("failed to setup config: %s", err)
 	}
 
 	if err = migrateUp(context.Background(), migrationsPath); err != nil {
-		log.Fatalf("can't migrate up: %s", err)
+		log.Fatalf("failed to migrate up: %s", err)
 	}
 
 	code := m.Run()
 
 	if err = migrateDown(context.Background(), migrationsPath); err != nil {
-		log.Fatalf("can't migrate down: %s", err)
+		log.Fatalf("failed to migrate down: %s", err)
 	}
 
 	os.Exit(code)
@@ -54,12 +54,12 @@ func TestMain(m *testing.M) {
 
 func setupConfig() error {
 	if err := godotenv.Load(".env"); err != nil {
-		return fmt.Errorf("can't load .env file: %w", err)
+		return fmt.Errorf("failed to load .env file: %w", err)
 	}
 
 	var err error
 	if ctn, err = di.Build(); err != nil {
-		return fmt.Errorf("can't build di container: %w", err)
+		return fmt.Errorf("failed to build di container: %w", err)
 	}
 
 	var cfg *config.Config
@@ -68,7 +68,7 @@ func setupConfig() error {
 	}
 
 	if err = config.ReadFromFile(configPath, cfg); err != nil {
-		return fmt.Errorf("can't read config file: %w", err)
+		return fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	return nil
@@ -76,7 +76,7 @@ func setupConfig() error {
 
 func migrateUp(ctx context.Context, path string) error {
 	if err := migrateDown(ctx, path); err != nil && !isVersionTableMissing(err) {
-		return fmt.Errorf("can't migrate old records down: %w", err)
+		return fmt.Errorf("failed to migrate old records down: %w", err)
 	}
 
 	var conn *pgxpool.Pool
@@ -86,11 +86,11 @@ func migrateUp(ctx context.Context, path string) error {
 
 	goose.SetLogger(log.New(io.Discard, "", 0))
 	if err := goose.SetDialect(string(goose.DialectPostgres)); err != nil {
-		return fmt.Errorf("can't set goose dialect: %w", err)
+		return fmt.Errorf("failed to set goose dialect: %w", err)
 	}
 
 	if err := goose.UpContext(ctx, stdlib.OpenDBFromPool(conn), path); err != nil {
-		return fmt.Errorf("can't migrate up: %w", err)
+		return fmt.Errorf("failed to migrate up: %w", err)
 	}
 
 	return nil
@@ -103,11 +103,11 @@ func migrateDown(ctx context.Context, path string) error {
 	}
 
 	if err := goose.SetDialect(string(goose.DialectPostgres)); err != nil {
-		return fmt.Errorf("can't set goose dialect: %w", err)
+		return fmt.Errorf("failed to set goose dialect: %w", err)
 	}
 
 	if err := goose.ResetContext(ctx, stdlib.OpenDBFromPool(conn), path); err != nil {
-		return fmt.Errorf("can't migrate down: %w", err)
+		return fmt.Errorf("failed to migrate down: %w", err)
 	}
 
 	return nil

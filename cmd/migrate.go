@@ -53,7 +53,7 @@ func migrateUp(ctn di.Container) *cmd.Command {
 
 			goose.SetLogger(log.New(io.Discard, "", 0))
 			if err := goose.SetDialect(string(goose.DialectPostgres)); err != nil {
-				return fmt.Errorf("can't set goose dialect: %w", err)
+				return fmt.Errorf("failed to set goose dialect: %w", err)
 			}
 
 			var (
@@ -78,7 +78,7 @@ func migrateUp(ctn di.Container) *cmd.Command {
 			defer cancel()
 
 			if err = goose.UpContext(reqCtx, stdlib.OpenDBFromPool(conn), path); err != nil {
-				return fmt.Errorf("can't migrate up: %w", err)
+				return fmt.Errorf("failed to migrate up: %w", err)
 			}
 
 			return nil

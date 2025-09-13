@@ -79,7 +79,7 @@ func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Respon
 			return httpx.NewErrorResponse(http.StatusUnauthorized, "invalid email or password")
 		}
 
-		h.log.Error("can't get user by email", logger.Error(err))
+		h.log.Error("failed to get user by email", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
@@ -89,24 +89,24 @@ func (h *LoginV1) Handle(ctx context.Context, req *LoginV1Request) *httpx.Respon
 			return httpx.NewErrorResponse(http.StatusUnauthorized, "invalid email or password")
 		}
 
-		h.log.Error("can't compare password", logger.Error(err))
+		h.log.Error("failed to compare password", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	var accessToken string
 	if accessToken, err = h.issuer.IssueAccessToken(user.ID()); err != nil {
-		h.log.Error("can't issue access token", logger.Error(err))
+		h.log.Error("failed to issue access token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(user.ID()); err != nil {
-		h.log.Error("can't issue refresh token", logger.Error(err))
+		h.log.Error("failed to issue refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {
-		h.log.Error("can't save refresh token", logger.Error(err))
+		h.log.Error("failed to save refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 

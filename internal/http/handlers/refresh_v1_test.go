@@ -47,7 +47,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			expResp:         httpx.NewErrorResponse(http.StatusUnauthorized, "invalid refresh token"),
 		},
 		{
-			name:               "can't issue access token",
+			name:               "failed to issue access token",
 			req:                generateRequest,
 			onPop:              func() error { return nil },
 			onVerifyRefresh:    func() (string, error) { return "user_id", nil },
@@ -55,7 +55,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			expResp:            httpx.InternalServerError,
 		},
 		{
-			name:                "can't issue refresh token",
+			name:                "failed to issue refresh token",
 			req:                 generateRequest,
 			onPop:               func() error { return nil },
 			onVerifyRefresh:     func() (string, error) { return "user_id", nil },
@@ -64,7 +64,7 @@ func TestRefreshV1_Handle(t *testing.T) {
 			expResp:             httpx.InternalServerError,
 		},
 		{
-			name:                "can't save refresh token",
+			name:                "failed to save refresh token",
 			req:                 generateRequest,
 			onPop:               func() error { return nil },
 			onVerifyRefresh:     func() (string, error) { return "user_id", nil },

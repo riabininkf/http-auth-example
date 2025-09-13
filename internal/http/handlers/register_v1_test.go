@@ -46,20 +46,20 @@ func TestRegisterV1_Handle(t *testing.T) {
 			expResp:    httpx.NewErrorResponse(http.StatusBadRequest, "user already exists"),
 		},
 		{
-			name:       "can't save user",
+			name:       "failed to save user",
 			req:        generateRequest,
 			onSaveUser: func() error { return assert.AnError },
 			expResp:    httpx.InternalServerError,
 		},
 		{
-			name:               "can't issue access token",
+			name:               "failed to issue access token",
 			req:                generateRequest,
 			onSaveUser:         func() error { return nil },
 			onIssueAccessToken: func() (string, error) { return "", assert.AnError },
 			expResp:            httpx.InternalServerError,
 		},
 		{
-			name:                "can't issue refresh token",
+			name:                "failed to issue refresh token",
 			req:                 generateRequest,
 			onSaveUser:          func() error { return nil },
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },
@@ -67,7 +67,7 @@ func TestRegisterV1_Handle(t *testing.T) {
 			expResp:             httpx.InternalServerError,
 		},
 		{
-			name:                "can't save refresh token",
+			name:                "failed to save refresh token",
 			req:                 generateRequest,
 			onSaveUser:          func() error { return nil },
 			onIssueAccessToken:  func() (string, error) { return "access_token", nil },

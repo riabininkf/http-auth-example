@@ -77,7 +77,7 @@ func (h *RegisterV1) Handle(ctx context.Context, req *RegisterV1Request) *httpx.
 		hashedPassword []byte
 	)
 	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost); err != nil {
-		h.log.Error("can't generate password hash", logger.Error(err))
+		h.log.Error("failed to generate password hash", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
@@ -93,24 +93,24 @@ func (h *RegisterV1) Handle(ctx context.Context, req *RegisterV1Request) *httpx.
 			return httpx.NewErrorResponse(http.StatusBadRequest, "user already exists")
 		}
 
-		h.log.Error("can't save user", logger.Error(err))
+		h.log.Error("failed to save user", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	var accessToken string
 	if accessToken, err = h.issuer.IssueAccessToken(user.ID()); err != nil {
-		h.log.Error("can't issue access token", logger.Error(err))
+		h.log.Error("failed to issue access token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(user.ID()); err != nil {
-		h.log.Error("can't issue refresh token", logger.Error(err))
+		h.log.Error("failed to issue refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {
-		h.log.Error("can't save refresh token", logger.Error(err))
+		h.log.Error("failed to save refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 

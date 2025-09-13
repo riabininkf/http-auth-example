@@ -26,7 +26,7 @@ func Auth(log *logger.Logger, verifier Authenticator) Middleware {
 				log.Warn("user is not authenticated", logger.Error(err))
 
 				if err = httpx.WriteJsonResponse(httpx.Unauthorized, writer); err != nil {
-					log.Error("can't write error response", logger.Error(err))
+					log.Error("failed to write error response", logger.Error(err))
 				}
 
 				return

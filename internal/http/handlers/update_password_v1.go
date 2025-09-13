@@ -91,7 +91,7 @@ func (h *UpdatePasswordV1) Handle(ctx context.Context, req *UpdatePasswordV1Requ
 			return httpx.NotFound
 		}
 
-		h.log.Error("can't get user by id", logger.Error(err))
+		h.log.Error("failed to get user by id", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
@@ -101,18 +101,18 @@ func (h *UpdatePasswordV1) Handle(ctx context.Context, req *UpdatePasswordV1Requ
 			return httpx.NewErrorResponse(http.StatusBadRequest, "invalid old password")
 		}
 
-		h.log.Error("can't compare passwords", logger.Error(err))
+		h.log.Error("failed to compare passwords", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	var hashedPassword []byte
 	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost); err != nil {
-		h.log.Error("can't generate password hash", logger.Error(err))
+		h.log.Error("failed to generate password hash", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	if err = h.passwordUpdater.UpdatePassword(ctx, userID, string(hashedPassword)); err != nil {
-		h.log.Error("can't update password", logger.Error(err))
+		h.log.Error("failed to update password", logger.Error(err))
 		return httpx.InternalServerError
 	}
 

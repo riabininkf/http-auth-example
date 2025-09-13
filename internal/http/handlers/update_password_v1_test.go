@@ -85,7 +85,7 @@ func TestNewUpdatePasswordV1(t *testing.T) {
 			expResp: httpx.NotFound,
 		},
 		{
-			name:   "can't get user by id",
+			name:   "failed to get user by id",
 			req:    generateRequest,
 			userID: "user_id",
 			onGetUserByID: func() (domain.User, error) {
@@ -103,7 +103,7 @@ func TestNewUpdatePasswordV1(t *testing.T) {
 			expResp: httpx.NewErrorResponse(http.StatusBadRequest, "invalid old password"),
 		},
 		{
-			name:   "can't update password",
+			name:   "failed to update password",
 			req:    generateRequest,
 			userID: "user_id",
 			onGetUserByID: func() (domain.User, error) {

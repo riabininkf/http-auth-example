@@ -62,7 +62,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			expResp: httpx.NewErrorResponse(http.StatusUnauthorized, "invalid email or password"),
 		},
 		{
-			name:         "can't get user by email",
+			name:         "failed to get user by email",
 			req:          generateRequest,
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) { return nil, assert.AnError },
 			expResp:      httpx.InternalServerError,
@@ -76,7 +76,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			expResp: httpx.NewErrorResponse(http.StatusUnauthorized, "invalid email or password"),
 		},
 		{
-			name: "can't issue access token",
+			name: "failed to issue access token",
 			req:  generateRequest,
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil
@@ -85,7 +85,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			expResp:            httpx.InternalServerError,
 		},
 		{
-			name: "can't issue refresh token",
+			name: "failed to issue refresh token",
 			req:  generateRequest,
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil
@@ -95,7 +95,7 @@ func TestLoginV1_Handle(t *testing.T) {
 			expResp:             httpx.InternalServerError,
 		},
 		{
-			name: "can't save refresh token",
+			name: "failed to save refresh token",
 			req:  generateRequest,
 			onGetByEmail: func(req *handlers.LoginV1Request) (domain.User, error) {
 				return domain.NewUser(uuid.NewString(), req.Email, generatePasswordHash(t, req.Password)), nil

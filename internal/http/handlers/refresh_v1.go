@@ -75,18 +75,18 @@ func (h *RefreshV1) Handle(ctx context.Context, req *RefreshV1Request) *httpx.Re
 
 	var accessToken string
 	if accessToken, err = h.issuer.IssueAccessToken(userID); err != nil {
-		h.log.Error("can't issue access token", logger.Error(err))
+		h.log.Error("failed to issue access token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	var refreshToken string
 	if refreshToken, err = h.issuer.IssueRefreshToken(userID); err != nil {
-		h.log.Error("can't issue refresh token", logger.Error(err))
+		h.log.Error("failed to issue refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
 	if err = h.jwtStorage.Save(ctx, refreshToken); err != nil {
-		h.log.Error("can't save refresh token", logger.Error(err))
+		h.log.Error("failed to save refresh token", logger.Error(err))
 		return httpx.InternalServerError
 	}
 
